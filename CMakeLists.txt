@@ -1,0 +1,72 @@
+cmake_minimum_required(VERSION 3.20)
+
+option(USE_CUDA "Enable CUDA" ON)
+message(STATUS "Option USE_CUDA: ${USE_CUDA}")
+option(USE_OPENCL OFF)
+message(STATUS "Option USE_OPENCL: ${USE_OPENCL}")
+option(USE_GTEST OFF)
+message(STATUS "Option USE_GTEST: ${USE_GTEST}")
+option(USE_DEMO OFF)
+message(STATUS "Option USE_DEMO: ${USE_DEMO}")
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_COMPILER "/usr/local/bin/clang++-18")
+set(CMAKE_BUILD_TYPE Debug)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+  message(STATUS "Build type is Debug")
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wextra -Werror")
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -ggdb -fsanitize=address -fno-omit-frame-pointer -fno-optimize-sibling-calls")
+  set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+  message(STATUS "CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
+  message(STATUS "CMAKE_CXX_FLAGS_DEBUG: ${CMAKE_CXX_FLAGS_DEBUG}")
+  message(STATUS "CMAKE_EXE_LINKER_FLAGS: ${CMAKE_EXE_LINKER_FLAGS}")
+  message(STATUS "CMAKE_SHARED_LINKER_FLAGS: ${CMAKE_SHARED_LINKER_FLAGS}")
+endif()
+
+project(simple_llama CXX C)
+
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
+find_package(GTest REQUIRED)
+find_package(glog REQUIRED)
+find_package(Armadillo REQUIRED)
+
+aux_source_directory(simple/src/tensor/ DIR_TENSOR)
+aux_source_directory(simple/src/base/ DIR_BASE)
+aux_source_directory(simple/src/op/ DIR_OP)
+aux_source_directory(simple/src/model/ DIR_MODEL)
+aux_source_directory(simple/src/op/kernels/cpu DIR_KERNEL_CPU)
+aux_source_directory(simple/src/op/kernels/cuda DIR_KERNEL_CUDA)
+aux_source_directory(simple/src/op/kernels/ DIR_KERNEL)
+aux_source_directory(simple/src/sampler DIR_SAMPLE)
+
+if(USE_CUDA)
+  set(CMAKE_CUDA_STANDARD 20)
+  set(CMAKE_CUDA_SEPARABLE_COMPILATION OFF)
+  set(CMAKE_CUDA_COMPILER "/usr/local/cuda/bin/nvcc")
+  if (NOT DEFINED CMAKE_CUDA_ARCHITECTURES AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.24)
+    set(CMAKE_CUDA_ARCHITECTURES native)
+  endif()
+endif()
+
+add_library(llama SHARED ${DIR_TENSOR} ${DIR_BASE} ${DIR_OP} ${DIR_KERNEL} ${DIR_MODEL} ${DIR_KERNEL_CPU} ${DIR_KERNEL_CUDA} ${DIR_KERNEL} ${DIR_SAMPLE})
+target_link_libraries(llama sentencepiece glog::glog Gtest::gtest_main pthread cudart armadillo)
+target_link_directories(llama PUBLIC ${CMAKE_CUDA_COMPILER_LIBRARY_ROOT}/lib64)
+
+target_include_directories(llama PUBLIC ${glog_INCLUDE_DIR})
+target_include_directories(llama PUBLIC ${PROJECT_SOURCE_DIR}/simple/include)
+target_include_directories(llama PUBLIC ${Armadillo_INCLUDE_DIR})
+
+if (USE_CUDA)
+  target_include_directories(llama PUBLIC ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES})
+endif()
+
+set_target_properties(llama PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+
+if (USE_GTEST)
+  add_subdirectory(test)
+endif()

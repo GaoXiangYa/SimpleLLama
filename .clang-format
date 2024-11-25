@@ -1,0 +1,45 @@
+---
+# 基本格式风格
+BasedOnStyle: Google
+
+# 缩进设置
+IndentWidth: 2             # 使用2个空格缩进
+TabWidth: 2                # Tab键宽度设置为2
+UseTab: Never              # 禁止使用Tab字符
+
+# 换行规则
+ColumnLimit: 80            # 每行字符限制为80
+BreakBeforeBraces: Attach  # 函数、类等大括号与前一行保持同一行
+AllowShortFunctionsOnASingleLine: Inline # 短函数允许在单行书写
+
+# 空格处理
+SpaceBeforeParens: ControlStatements  # 控制语句后需要括号前的空格
+SpacesInParentheses: false            # 括号内不需要额外空格
+SpacesInAngles: false                 # 模板参数尖括号内不需要额外空格
+
+# 对齐规则
+AlignAfterOpenBracket: AlwaysBreak    # 括号后元素总是换行
+AlignOperands: true                   # 操作符对齐
+AlignTrailingComments: true           # 注释尾部对齐
+
+# 命名风格
+ConstructorInitializerAllOnOneLineOrOnePerLine: true  # 构造函数初始化列表
+DerivePointerAlignment: false                        # 指针对齐风格手动指定
+PointerAlignment: Left                               # 将星号靠近变量名
+
+# 导入顺序
+SortIncludes: true                   # 自动对包含文件按字母顺序排序
+IncludeBlocks: Preserve              # 包含文件的分组保持原样
+
+# 函数定义风格
+AllowAllParametersOfDeclarationOnNextLine: false  # 函数声明参数必须在同一行
+PenaltyReturnTypeOnItsOwnLine: 200                # 惩罚返回类型独占一行
+
+# 注释规则
+ReflowComments: true  # 自动重新排列注释，保持风格一致
+
+# 其他
+IndentCaseLabels: true              # case语句缩进
+SpaceBeforeCaseColon: false         # case语句冒号前无空格
+EmptyLineBeforeAccessModifier: Never # 访问控制符前不需要空行
+...
