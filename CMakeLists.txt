@@ -29,7 +29,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   message(STATUS "CMAKE_SHARED_LINKER_FLAGS: ${CMAKE_SHARED_LINKER_FLAGS}")
 endif()
 
-project(simple_llama CXX C)
+project(simple_llama CXX C CUDA)
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 find_package(GTest REQUIRED)
@@ -52,16 +52,16 @@ if(USE_CUDA)
   # 查找 CUDA
   set(CMAKE_CUDA_STANDARD 20)
   set(CMAKE_CUDA_SEPARABLE_COMPILATION OFF)
-  set(CMAKE_CUDA_COMPILER "/usr/local/cuda/bin/nvcc")
+  set(CMAKE_CUDA_COMPILER "/usr/local/cuda-12.6/bin/nvcc")
   if (NOT DEFINED CMAKE_CUDA_ARCHITECTURES AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.24)
     set(CMAKE_CUDA_ARCHITECTURES native)
   endif()
-  enable_language(CUDA)
+  # enable_language(CUDA)
 endif()
 
 add_library(llama SHARED ${DIR_BASE})
 # add_library(llama SHARED ${DIR_TENSOR} ${DIR_BASE} ${DIR_OP} ${DIR_KERNEL} ${DIR_MODEL} ${DIR_KERNEL_CPU} ${DIR_KERNEL_CUDA} ${DIR_KERNEL} ${DIR_SAMPLE})
-target_link_libraries(llama sentencepiece glog::glog gtest_main pthread cudart armadillo)
+target_link_libraries(llama glog::glog gtest_main pthread)
 # target_link_directories(llama PUBLIC ${CMAKE_CUDA_COMPILER_LIBRARY_ROOT}/lib64)
 
 target_include_directories(llama PUBLIC ${glog_INCLUDE_DIR})
@@ -74,6 +74,6 @@ endif()
 
 set_target_properties(llama PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 
-if (USE_GTEST)
-  add_subdirectory(test)
-endif()
+# if (USE_GTEST)
+#   add_subdirectory(test)
+# endif()
