@@ -18,6 +18,8 @@ class DeviceAllocator {
   explicit DeviceAllocator(DeviceType device_type)
       : device_type_(device_type) {}
 
+  virtual ~DeviceAllocator() {}
+
   virtual DeviceType GetDeviceType() const { return device_type_; }
 
   // 释放内存

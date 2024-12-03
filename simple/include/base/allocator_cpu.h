@@ -9,6 +9,8 @@ class CPUDeviceAllocator : public DeviceAllocator {
  public:
   explicit CPUDeviceAllocator();
 
+  ~CPUDeviceAllocator() {}
+
   void* Allocate(std::size_t size) const override;
 
   void Release(void* ptr) const override;

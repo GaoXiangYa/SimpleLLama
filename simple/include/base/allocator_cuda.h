@@ -18,6 +18,8 @@ class CUDADeviceAllocator : public DeviceAllocator {
  public:
   explicit CUDADeviceAllocator();
 
+  ~CUDADeviceAllocator() {}
+
   void* Allocate(std::size_t size) const override;
 
   void Release(void* ptr) const override;
