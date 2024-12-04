@@ -97,12 +97,11 @@ class BaseOperator {
   base::DeviceType device_type_{base::DeviceType::Unknown};
 };
 
-// 带参算子
-class OperatorWithParams : public BaseOperator {
+// 不带参算子
+class OperatorWithOutParams : public BaseOperator {
  public:
-  explicit OperatorWithParams(
-      base::DeviceType device_type, OperatorType layer_type, base::DataType data_type,
-      std::string layer_name = "");
+  explicit OperatorWithOutParams(
+      base::DeviceType device_type, OperatorType layer_type, std::string layer_name = "");
 
   base::Status Init() override;
 
@@ -174,10 +173,10 @@ class OperatorWithParams : public BaseOperator {
 };
 
 // 不带参数算子
-class OperatorWithOutParams : public OperatorWithParams {
+class OperatorWithParams : public OperatorWithOutParams {
  public:
-  explicit OperatorWithOutParams(
-      base::DeviceType device_type, OperatorType layer_type, base::DataType data_type,
+  explicit OperatorWithParams(
+      base::DeviceType device_type, OperatorType layer_type, bool is_quant_layer = false,
       std::string layer_name = "");
   std::size_t GetWeightSize() const;
 

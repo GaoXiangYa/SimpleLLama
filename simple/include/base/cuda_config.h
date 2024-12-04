@@ -6,10 +6,10 @@
 namespace kernel {
 
 struct CudaConfig {
-  cudaStream_t steam = nullptr;
+  cudaStream_t stream = nullptr;
   ~CudaConfig() {
-    if (steam) {
-      cudaStreamDestroy(steam);
+    if (stream) {
+      cudaStreamDestroy(stream);
     }
   }
 };
