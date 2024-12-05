@@ -158,12 +158,12 @@ void OperatorWithOutParams::ResetOutputSize(size_t size) {
 void OperatorWithOutParams::ToCuda() {
   for (auto& input : inputs_) {
     if (!input.IsEmpty()) {
-      input.ToCuda(cuda_config_ ? cuda_config_->stream : nullptr);
+      input.CopyToCuda(cuda_config_ ? cuda_config_->stream : nullptr);
     }
   }
   for (auto& output : outputs_) {
     if (!output.IsEmpty()) {
-      output.ToCuda(cuda_config_ ? cuda_config_->stream : nullptr);
+      output.CopyToCuda(cuda_config_ ? cuda_config_->stream : nullptr);
     }
   }
 }
@@ -210,10 +210,10 @@ const tensor::Tensor& OperatorWithParams::GetWeight(int idx) const {
 void OperatorWithParams::ToCuda() {
   OperatorWithOutParams::ToCuda();
   for (auto& weight : weights_) {
-    weight.ToCuda(cuda_config_ ? cuda_config_->stream : nullptr);
+    weight.CopyToCuda(cuda_config_ ? cuda_config_->stream : nullptr);
   }
   if (!scales_.IsEmpty()) {
-    scales_.ToCuda(cuda_config_ ? cuda_config_->stream : nullptr);
+    scales_.CopyToCuda(cuda_config_ ? cuda_config_->stream : nullptr);
   }
 }
 

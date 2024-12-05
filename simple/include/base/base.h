@@ -29,6 +29,17 @@ enum StatusCode : uint8_t {
   kInvalidArgument = 7,
 };
 
+inline size_t GetDataTypeSize(DataType data_type) {
+  if (data_type == DataType::Fp32) {
+    return sizeof(float);
+  } else if (data_type == DataType::Int8) {
+    return sizeof(int8_t);
+  } else if (data_type == DataType::Int32) {
+    return sizeof(int32_t);
+  } else {
+    return 0;
+  }
+}
 class Status {
  public:
   Status(int code = StatusCode::kSuccess, std::string err_message = "");

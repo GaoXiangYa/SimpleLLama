@@ -30,6 +30,8 @@ class Buffer : public NoCopyable, std::enable_shared_from_this<Buffer> {
 
   std::size_t Size() const;
 
+  size_t GetByteSize() const { return byte_size_; }
+
   std::shared_ptr<DeviceAllocator> Allocator() const;
 
   DeviceType GetDeviceType() const;
