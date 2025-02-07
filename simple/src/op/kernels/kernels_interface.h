@@ -14,7 +14,13 @@ using EmbeddingKernel = std::function<void(
     const tensor::Tensor& input, const tensor::Tensor& weight, const tensor::Tensor& output,
     int32_t vocab_size, void* stream)>;
 
+using RmsNormKernel = std::function<void(
+    const tensor::Tensor& input, const tensor::Tensor& weight, const tensor::Tensor& output,
+    void* stream)>;
+
 AddKernel GetAddKernel(base::DeviceType device_type);
 
 EmbeddingKernel GetEmbKernel(base::DeviceType device_type);
+
+RmsNormKernel GetRmsNormKernel(base::DeviceType device_type);
 }  // namespace kernel
