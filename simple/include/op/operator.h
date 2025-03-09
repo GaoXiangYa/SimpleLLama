@@ -29,8 +29,7 @@ enum class OperatorType : uint8_t {
 class BaseOperator {
  public:
   explicit BaseOperator(
-      base::DeviceType device_type, OperatorType layer_type, base::DataType data_type,
-      std::string layer_name = "");
+      base::DeviceType device_type, OperatorType layer_type, std::string layer_name = "");
 
   base::DataType GetDataType() const;
 

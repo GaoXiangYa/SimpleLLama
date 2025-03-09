@@ -1,13 +1,14 @@
 #include "op/encode.h"
+#include <absl/strings/str_join.h>
+#include <absl/strings/str_replace.h>
+#include <absl/strings/str_split.h>
 #include <glog/logging.h>
 #include <cstdint>
+#include <fstream>
 #include <string>
 #include <vector>
 #include "base/unicode.h"
 #include "nlohmann/json.hpp"
-#include <absl/strings/str_join.h>
-#include <absl/strings/str_replace.h>
-#include <absl/strings/str_split.h>
 
 namespace op {
 
@@ -60,7 +61,8 @@ int32_t SpeEncodeOperator::GetVocabSize() const {
 static const std::string PAT_STR =
     R"((?i:'s|'t|'re|'ve|'m|'ll|'d)|[^\r\n\p{L}\p{N}]?\p{L}+|\p{N}| ?[^\s\p{L}\p{N}]+[\r\n]*|\s*[\r\n]+|\s+(?:$|[^\S])|\s+)";
 
-BpeEncodeOperator::BpeEncodeOperator(const std::string& token_model_path, bool has_bos, bool has_eos)
+BpeEncodeOperator::BpeEncodeOperator(
+    const std::string& token_model_path, bool has_bos, bool has_eos)
     : EncoderOperatorBase(std::move(token_model_path), has_bos, has_eos) {
   using json = nlohmann::json;
   std::ifstream f(token_model_path_);
@@ -120,7 +122,7 @@ std::vector<int32_t> BpeEncodeOperator::Encode(const std::string& sentence) cons
   return input_ids;
 }
 
-std::string BpeEncodeOperator::Decode([[maybe_unused]]int32_t token_id) const {
+std::string BpeEncodeOperator::Decode([[maybe_unused]] int32_t token_id) const {
   return "";
 }
 
@@ -146,7 +148,8 @@ int32_t BpeEncodeOperator::GetVocabSize() const {
   return num_token_;
 }
 
-QwenEncodeOperator::QwenEncodeOperator(const std::string& token_model_path, bool has_bos, bool has_eos)
+QwenEncodeOperator::QwenEncodeOperator(
+    const std::string& token_model_path, bool has_bos, bool has_eos)
     : BpeEncodeOperator(std::move(token_model_path), has_bos, has_eos) {
   using json = nlohmann::json;
   std::ifstream f(token_model_path_);
